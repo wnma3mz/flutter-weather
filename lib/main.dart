@@ -57,7 +57,9 @@ class WeathersAppState extends State<WeathersApp> {
   @override
   void initState() {
     super.initState();
-    weathers = WeatherData();
+//    var cityids = ['101050201'];
+    List<String> cityids;
+    weathers = WeatherData(cityids);
   }
 
   void configurationUpdater(WeatherConfiguration value) {

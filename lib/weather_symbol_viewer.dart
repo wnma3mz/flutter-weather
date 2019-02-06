@@ -16,8 +16,8 @@ class _WeatherSymbolView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(weather != null);
-    final String lastSale = weather.lastSale;
-    String changeInPrice = weather.percentChange;
+    final String lastSale = weather.weathers;
+    String changeInPrice = weather.wDwS;
 
     final TextStyle headings = Theme.of(context).textTheme.caption;
     return Container(
@@ -27,7 +27,7 @@ class _WeatherSymbolView extends StatelessWidget {
           Row(
             children: <Widget>[
               Text(
-                '${weather.symbol}',
+                '${weather.city}',
                 style: Theme.of(context).textTheme.title
               ),
 //              arrow,
@@ -40,20 +40,10 @@ class _WeatherSymbolView extends StatelessWidget {
             height: 8.0
           ),
           Text('时间', style: headings),
-          Text('${weather.marketCap}'),
+          Text('${weather.time}'),
           Container(
             height: 8.0
           ),
-//          RichText(
-//            text: TextSpan(
-//              style: DefaultTextStyle.of(context).style.merge(const TextStyle(fontSize: 8.0)),
-//              text: 'Prices may be delayed by ',
-//              children: const <TextSpan>[
-//                TextSpan(text: 'several', style: TextStyle(fontStyle: FontStyle.italic)),
-//                TextSpan(text: ' years.'),
-//              ]
-//            )
-//          ),
         ],
         mainAxisSize: MainAxisSize.min
       )
@@ -75,7 +65,7 @@ class WeatherSymbolPage extends StatelessWidget {
         final Weather weather = weathers[symbol];
         return Scaffold(
           appBar: AppBar(
-            title: Text(weather?.name ?? symbol)
+            title: Text(weather?.provinceName ?? symbol)
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -92,7 +82,7 @@ class WeatherSymbolPage extends StatelessWidget {
                       weather: weather,
                       arrow: Hero(
                         tag: weather,
-                        child: WeatherArrow(percentChange: weather.percentChange),
+                        child: WeatherArrow(wDwS: weather.wDwS),
                       ),
                     ) : Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -123,7 +113,7 @@ class WeatherSymbolBottomSheet extends StatelessWidget {
       ),
       child: _WeatherSymbolView(
         weather: weather,
-        arrow: WeatherArrow(percentChange: weather.percentChange)
+        arrow: WeatherArrow(wDwS: weather.wDwS)
       )
    );
   }

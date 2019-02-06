@@ -13,38 +13,34 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class Weather {
-  Weather(this.symbol, this.name, this.lastSale, this.marketCap,
-      this.percentChange);
+  Weather(this.city, this.provinceName, this.weathers, this.time, this.wDwS);
 
   Weather.fromFields(Map<String, dynamic> data, Map<String, dynamic> realtime) {
-    // FIXME: This class should only have static data, not lastSale, etc.
-    // "Symbol","Name","LastSale","MarketCap","IPOyear","Sector","industry","Summary Quote",
-
-    lastSale = realtime['weather'];
-    symbol = data['city'];
-    name = data['provinceName'];
-    marketCap = realtime['time'];
-    percentChange = realtime['wD'] + realtime['wS'];
-
-//    print(lastSale);
-//    print(symbol);
-//    print(name);
-//    print(marketCap);
-//    print(percentChange);
+    weathers = realtime['weather'];
+    city = data['city'];
+    provinceName = data['provinceName'];
+    time = realtime['time'];
+    wDwS = realtime['wD'] + realtime['wS'];
   }
 
-  String symbol;
-  String name;
-  String lastSale;
-  String marketCap;
-  String percentChange;
+  String city;
+  String provinceName;
+  String weathers;
+  String time;
+  String wDwS;
 }
 
 class WeatherData extends ChangeNotifier {
-  WeatherData() {
+
+  WeatherData(List<String> cityids) {
     if (actuallyFetchData) {
       _httpClient = http.Client();
-      _fetchNextChunk();
+      if (cityids == null)
+        cityids = ['101010100', '101020100', '101030100', '101280101', '101280601'];
+      else
+        // 列表相加，不确定能不能这么写。。。
+        cityids.addAll(cityids);
+      _fetchNextChunk(cityids);
     }
   }
 
@@ -59,53 +55,36 @@ class WeatherData extends ChangeNotifier {
 
   void add(Map<String, dynamic> data) {
     final Weather weather = Weather.fromFields(data, data['realtime']);
-    _symbols.add(weather.symbol);
-    _weathers[weather.symbol] = weather;
-
+    _symbols.add(weather.city);
+    _weathers[weather.city] = weather;
     _symbols.sort();
     notifyListeners();
   }
 
-  static const int _chunkCount = 101240110;
-  int _nextChunk = 101240101;
-
-  String _urlToFetch(int chunk) {
-    return 'http://aider.meizu.com/app/weather/listWeather?cityIds=$chunk';
+  String _urlToFetch(var _cityids) {
+    var url = 'http://aider.meizu.com/app/weather/listWeather?';
+    for (var _ids in _cityids) {
+      url += 'cityIds=' + _ids + '&';
+    }
+    return url;
   }
 
   http.Client _httpClient;
 
   static bool actuallyFetchData = true;
 
-  void _fetchNextChunk() {
-    _httpClient
-        .get(_urlToFetch(_nextChunk++))
-        .then<void>((http.Response response) {
+  void _fetchNextChunk(var cityids) {
+    _httpClient.get(_urlToFetch(cityids)).then<void>((http.Response response) {
       final String json = response.body;
       const JsonDecoder decoder = JsonDecoder();
-      final _data = decoder.convert(json)["value"][0];
-      add(_data);
-      if (_nextChunk < _chunkCount) {
-        _fetchNextChunk();
-      } else {
-        _end();
+      final _data = decoder.convert(json)["value"];
+      for (var _d in _data) {
+        add(_d);
       }
     });
-//    _httpClient.get(_urlToFetch(_nextChunk++)).then<void>((http.Response response) {
-//      final String json = response.body;
-//      if (json == null) {
-//        debugPrint('Failed to load stock data chunk ${_nextChunk - 1}');
-//        _end();
-//        return;
-//      }
-//      const JsonDecoder decoder = JsonDecoder();
-//      add(decoder.convert(json));
-//      if (_nextChunk < _chunkCount) {
-//        _fetchNextChunk();
-//      } else {
-//        _end();
-//      }
-//    });
+
+    _end();
+
   }
 
   void _end() {

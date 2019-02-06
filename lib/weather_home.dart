@@ -12,7 +12,7 @@ import 'weather_types.dart';
 
 typedef ModeUpdater = void Function(WeatherMode mode);
 
-enum WeatherHomeTab { market, portfolio }
+enum WeatherHomeTab { city, note }
 
 class WeatherHome extends StatefulWidget {
   const WeatherHome(this.weathers, this.configuration, this.updater);
@@ -66,8 +66,7 @@ class WeatherHomeState extends State<WeatherHome> {
               child: Center(child: Text('Weather')),
               decoration: BoxDecoration(
                 color: Colors.purple,
-              )
-          ),
+              )),
           const ListTile(
             leading: Icon(Icons.assessment),
             title: Text('Weather List'),
@@ -161,16 +160,16 @@ class WeatherHomeState extends State<WeatherHome> {
   Iterable<Weather> _filterBySearchQuery(Iterable<Weather> weathers) {
     if (_searchQuery.text.isEmpty) return weathers;
     final RegExp regexp = RegExp(_searchQuery.text, caseSensitive: false);
-    return weathers.where((Weather weather) => weather.symbol.contains(regexp));
+    return weathers.where((Weather weather) => weather.city.contains(regexp));
   }
 
   void _buyWeather(Weather weather) {
     setState(() {
-      weather.percentChange = weather.lastSale;
-      weather.lastSale = weather.lastSale;
+      weather.wDwS = weather.weathers;
+      weather.weathers = weather.weathers;
     });
     _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text('Purchased ${weather.symbol} for ${weather.lastSale}'),
+      content: Text('Purchased ${weather.city} for ${weather.weathers}'),
       action: SnackBarAction(
         label: 'BUY MORE',
         onPressed: () {
@@ -186,11 +185,12 @@ class WeatherHomeState extends State<WeatherHome> {
       weathers: weathers.toList(),
       onAction: _buyWeather,
       onOpen: (Weather weather) {
-        Navigator.pushNamed(context, '/stock:${weather.symbol}');
+        Navigator.pushNamed(context, '/stock:${weather.city}');
       },
       onShow: (Weather weather) {
         _scaffoldKey.currentState.showBottomSheet<void>(
-            (BuildContext context) => WeatherSymbolBottomSheet(weather: weather));
+            (BuildContext context) =>
+                WeatherSymbolBottomSheet(weather: weather));
       },
     );
   }
@@ -203,14 +203,17 @@ class WeatherHomeState extends State<WeatherHome> {
       builder: (BuildContext context, Widget child) {
         return _buildWeatherList(
             context,
-            _filterBySearchQuery(_getWeatherList(widget.weathers, weatherSymbols))
+            _filterBySearchQuery(
+                    _getWeatherList(widget.weathers, weatherSymbols))
                 .toList(),
             tab);
       },
     );
   }
 
-  static const List<String> portfolioSymbols = <String>['南昌'];
+  static const List<String> noteSymbols = <String>['南昌'];
+  final _saved = new List<String>();
+
 
   Widget buildSearchBar() {
     return AppBar(
@@ -228,6 +231,22 @@ class WeatherHomeState extends State<WeatherHome> {
     );
   }
 
+  void _handleCreateCity() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) => _CreateCitySheet(),
+    );
+  }
+
+  Widget buildFloatingActionButton() {
+    return FloatingActionButton(
+      tooltip: 'New city',
+      child: const Icon(Icons.add),
+      backgroundColor: Theme.of(context).accentColor,
+      onPressed: _handleCreateCity,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -235,12 +254,14 @@ class WeatherHomeState extends State<WeatherHome> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: _isSearching ? buildSearchBar() : buildAppBar(),
+        floatingActionButton: buildFloatingActionButton(),
         drawer: _buildDrawer(context),
         body: TabBarView(
           children: <Widget>[
             _buildWeatherTab(
-                context, WeatherHomeTab.market, widget.weathers.allSymbols),
-            _buildWeatherTab(context, WeatherHomeTab.portfolio, portfolioSymbols),
+                context, WeatherHomeTab.city, widget.weathers.allSymbols),
+            _buildWeatherTab(
+                context, WeatherHomeTab.note, noteSymbols),
           ],
         ),
       ),
@@ -255,10 +276,39 @@ class LICENSES extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-          appBar: new AppBar(
-            title: new Text(title),
+      appBar: new AppBar(
+        title: new Text(title),
+      ),
+      body: new Center(child: new Text('This is TEST LICENSES!')),
+    );
+  }
+}
+
+class _CreateCitySheet extends StatelessWidget {
+  final TextEditingController _controller = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        new TextField(
+          controller: _controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: '请输入新城市的名字',
           ),
-          body: new Center(child: new Text('This is TEST LICENSES!')),
-        );
+        ),
+        new RaisedButton(
+          onPressed: () {
+            // to-do add citys
+              print(_controller.text);
+//              WeatherData weathers;
+//              weathers = WeatherData('101051201');
+              Navigator.pop(context);
+          },
+          child: new Text('DONE'),
+        ),
+      ],
+    );
   }
 }

@@ -53,9 +53,9 @@ class WeatherArrowPainter extends CustomPainter {
 }
 
 class WeatherArrow extends StatelessWidget {
-  const WeatherArrow({Key key, this.percentChange}) : super(key: key);
+  const WeatherArrow({Key key, this.wDwS}) : super(key: key);
 
-  final String percentChange;
+  final String wDwS;
 
   int _colorIndexForPercentChange(String percentChange) {
 //    const double maxPercent = 10.0;
@@ -79,7 +79,7 @@ class WeatherArrow extends StatelessWidget {
         child: CustomPaint(
             painter: WeatherArrowPainter(
                 // TODO(jackson): This should change colors with the theme
-                color: _colorForPercentChange(percentChange),
-                percentChange: percentChange)));
+                color: _colorForPercentChange(wDwS),
+                percentChange: wDwS)));
   }
 }
