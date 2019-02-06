@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-library stocks;
+library weathers;
 
 import 'dart:async';
 
@@ -15,34 +15,34 @@ import 'package:flutter/rendering.dart' show
   debugRepaintRainbowEnabled;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'stock_data.dart';
-import 'stock_home.dart';
-import 'stock_settings.dart';
-import 'stock_strings.dart';
-import 'stock_symbol_viewer.dart';
-import 'stock_types.dart';
+import 'weather_data.dart';
+import 'weather_home.dart';
+import 'weather_settings.dart';
+import 'weather_strings.dart';
+import 'weather_symbol_viewer.dart';
+import 'weather_types.dart';
 
-class _StocksLocalizationsDelegate extends LocalizationsDelegate<StockStrings> {
+class _WeathersLocalizationsDelegate extends LocalizationsDelegate<WeatherStrings> {
   @override
-  Future<StockStrings> load(Locale locale) => StockStrings.load(locale);
+  Future<WeatherStrings> load(Locale locale) => WeatherStrings.load(locale);
 
   @override
   bool isSupported(Locale locale) => locale.languageCode == 'es' || locale.languageCode == 'en';
 
   @override
-  bool shouldReload(_StocksLocalizationsDelegate old) => false;
+  bool shouldReload(_WeathersLocalizationsDelegate old) => false;
 }
 
-class StocksApp extends StatefulWidget {
+class WeathersApp extends StatefulWidget {
   @override
-  StocksAppState createState() => StocksAppState();
+  WeathersAppState createState() => WeathersAppState();
 }
 
-class StocksAppState extends State<StocksApp> {
-  StockData stocks;
+class WeathersAppState extends State<WeathersApp> {
+  WeatherData weathers;
 
-  StockConfiguration _configuration = StockConfiguration(
-    stockMode: StockMode.optimistic,
+  WeatherConfiguration _configuration = WeatherConfiguration(
+    weatherMode: WeatherMode.optimistic,
     backupMode: BackupMode.enabled,
     debugShowGrid: false,
     debugShowSizes: false,
@@ -57,29 +57,29 @@ class StocksAppState extends State<StocksApp> {
   @override
   void initState() {
     super.initState();
-    stocks = StockData();
+    weathers = WeatherData();
   }
 
-  void configurationUpdater(StockConfiguration value) {
+  void configurationUpdater(WeatherConfiguration value) {
     setState(() {
       _configuration = value;
     });
   }
 
   ThemeData get theme {
-    switch (_configuration.stockMode) {
-      case StockMode.optimistic:
+    switch (_configuration.weatherMode) {
+      case WeatherMode.optimistic:
         return ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.purple
         );
-      case StockMode.pessimistic:
+      case WeatherMode.pessimistic:
         return ThemeData(
           brightness: Brightness.dark,
           accentColor: Colors.redAccent
         );
     }
-    assert(_configuration.stockMode != null);
+    assert(_configuration.weatherMode != null);
     return null;
   }
 
@@ -103,7 +103,7 @@ class StocksAppState extends State<StocksApp> {
       final String symbol = path[1].substring(6);
       return MaterialPageRoute<void>(
         settings: settings,
-        builder: (BuildContext context) => StockSymbolPage(symbol: symbol, stocks: stocks),
+        builder: (BuildContext context) => WeatherSymbolPage(symbol: symbol, weathers: weathers),
       );
     }
     // The other paths we support are in the routes table.
@@ -121,10 +121,10 @@ class StocksAppState extends State<StocksApp> {
       return true;
     }());
     return MaterialApp(
-      title: 'Test',
+      title: 'Weather-Test',
       theme: theme,
       localizationsDelegates: <LocalizationsDelegate<dynamic>>[
-        _StocksLocalizationsDelegate(),
+        _WeathersLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
@@ -132,14 +132,14 @@ class StocksAppState extends State<StocksApp> {
         Locale('en', 'US'),
         Locale('es', 'ES'),
       ],
-      // 去除右上角Debug
+      // 去除右上角的Debug
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: _configuration.debugShowGrid,
       showPerformanceOverlay: _configuration.showPerformanceOverlay,
       showSemanticsDebugger: _configuration.showSemanticsDebugger,
       routes: <String, WidgetBuilder>{
-         '/':         (BuildContext context) => StockHome(stocks, _configuration, configurationUpdater),
-         '/settings': (BuildContext context) => StockSettings(_configuration, configurationUpdater)
+         '/':         (BuildContext context) => WeatherHome(weathers, _configuration, configurationUpdater),
+         '/settings': (BuildContext context) => WeatherSettings(_configuration, configurationUpdater)
       },
       onGenerateRoute: _getRoute,
     );
@@ -147,5 +147,5 @@ class StocksAppState extends State<StocksApp> {
 }
 
 void main() {
-  runApp(StocksApp());
+  runApp(WeathersApp());
 }

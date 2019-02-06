@@ -4,26 +4,26 @@
 
 import 'package:flutter/material.dart';
 
-import 'stock_data.dart';
-import 'stock_row.dart';
+import 'weather_data.dart';
+import 'weather_row.dart';
 
-class StockList extends StatelessWidget {
-  const StockList({ Key key, this.stocks, this.onOpen, this.onShow, this.onAction }) : super(key: key);
+class WeatherList extends StatelessWidget {
+  const WeatherList({ Key key, this.weathers, this.onOpen, this.onShow, this.onAction }) : super(key: key);
 
-  final List<Stock> stocks;
-  final StockRowActionCallback onOpen;
-  final StockRowActionCallback onShow;
-  final StockRowActionCallback onAction;
+  final List<Weather> weathers;
+  final WeatherRowActionCallback onOpen;
+  final WeatherRowActionCallback onShow;
+  final WeatherRowActionCallback onAction;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       key: const ValueKey<String>('stock-list'),
-      itemExtent: StockRow.kHeight,
-      itemCount: stocks.length,
+      itemExtent: WeatherRow.kHeight,
+      itemCount: weathers.length,
       itemBuilder: (BuildContext context, int index) {
-        return StockRow(
-          stock: stocks[index],
+        return WeatherRow(
+          weather: weathers[index],
           onPressed: onOpen,
           onDoubleTap: onShow,
           onLongPressed: onAction

@@ -4,28 +4,28 @@
 
 import 'package:flutter/material.dart';
 
-import 'stock_data.dart';
-import 'stock_list.dart';
-import 'stock_strings.dart';
-import 'stock_symbol_viewer.dart';
-import 'stock_types.dart';
+import 'weather_data.dart';
+import 'weather_list.dart';
+import 'weather_strings.dart';
+import 'weather_symbol_viewer.dart';
+import 'weather_types.dart';
 
-typedef ModeUpdater = void Function(StockMode mode);
+typedef ModeUpdater = void Function(WeatherMode mode);
 
-enum StockHomeTab { market, portfolio }
+enum WeatherHomeTab { market, portfolio }
 
-class StockHome extends StatefulWidget {
-  const StockHome(this.stocks, this.configuration, this.updater);
+class WeatherHome extends StatefulWidget {
+  const WeatherHome(this.weathers, this.configuration, this.updater);
 
-  final StockData stocks;
-  final StockConfiguration configuration;
-  final ValueChanged<StockConfiguration> updater;
+  final WeatherData weathers;
+  final WeatherConfiguration configuration;
+  final ValueChanged<WeatherConfiguration> updater;
 
   @override
-  StockHomeState createState() => StockHomeState();
+  WeatherHomeState createState() => WeatherHomeState();
 }
 
-class StockHomeState extends State<StockHome> {
+class WeatherHomeState extends State<WeatherHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchQuery = TextEditingController();
   bool _isSearching = false;
@@ -45,16 +45,16 @@ class StockHomeState extends State<StockHome> {
     });
   }
 
-  void _handleStockModeChange(StockMode value) {
-    if ((widget.updater != null) && (value == StockMode.optimistic)) {
+  void _handleWeatherModeChange(WeatherMode value) {
+    if ((widget.updater != null) && (value == WeatherMode.optimistic)) {
       _modeName = 'Dark';
       widget.updater(
-          widget.configuration.copyWith(stockMode: StockMode.pessimistic));
+          widget.configuration.copyWith(weatherMode: WeatherMode.pessimistic));
     }
-    if ((widget.updater != null) && (value == StockMode.pessimistic)) {
+    if ((widget.updater != null) && (value == WeatherMode.pessimistic)) {
       _modeName = 'Light';
       widget.updater(
-          widget.configuration.copyWith(stockMode: StockMode.optimistic));
+          widget.configuration.copyWith(weatherMode: WeatherMode.optimistic));
     }
   }
 
@@ -70,7 +70,7 @@ class StockHomeState extends State<StockHome> {
           ),
           const ListTile(
             leading: Icon(Icons.assessment),
-            title: Text('Stock List'),
+            title: Text('Weather List'),
             selected: true,
           ),
           // 分界线
@@ -80,9 +80,9 @@ class StockHomeState extends State<StockHome> {
             title: Text('$_modeName Mode'),
             onTap: () {
               if (_modeName == 'Light')
-                _handleStockModeChange(StockMode.optimistic);
+                _handleWeatherModeChange(WeatherMode.optimistic);
               else if (_modeName == 'Dark')
-                _handleStockModeChange(StockMode.pessimistic);
+                _handleWeatherModeChange(WeatherMode.pessimistic);
             },
           ),
           const Divider(),
@@ -134,7 +134,7 @@ class StockHomeState extends State<StockHome> {
   Widget buildAppBar() {
     return AppBar(
       elevation: 0.0,
-      title: Text(StockStrings.of(context).title()),
+      title: Text(WeatherStrings.of(context).title()),
       actions: <Widget>[
         IconButton(
           icon: const Icon(Icons.search),
@@ -144,68 +144,66 @@ class StockHomeState extends State<StockHome> {
       ],
       bottom: TabBar(
         tabs: <Widget>[
-          Tab(text: StockStrings.of(context).market()),
-          Tab(text: StockStrings.of(context).portfolio()),
+          Tab(text: WeatherStrings.of(context).market()),
+          Tab(text: WeatherStrings.of(context).portfolio()),
         ],
       ),
     );
   }
 
-  static Iterable<Stock> _getStockList(
-      StockData stocks, Iterable<String> symbols) {
+  static Iterable<Weather> _getWeatherList(
+      WeatherData weathers, Iterable<String> symbols) {
     return symbols
-        .map<Stock>((String symbol) => stocks[symbol])
-        .where((Stock stock) => stock != null);
+        .map<Weather>((String symbol) => weathers[symbol])
+        .where((Weather weather) => weather != null);
   }
 
-  Iterable<Stock> _filterBySearchQuery(Iterable<Stock> stocks) {
-    if (_searchQuery.text.isEmpty) return stocks;
+  Iterable<Weather> _filterBySearchQuery(Iterable<Weather> weathers) {
+    if (_searchQuery.text.isEmpty) return weathers;
     final RegExp regexp = RegExp(_searchQuery.text, caseSensitive: false);
-    return stocks.where((Stock stock) => stock.symbol.contains(regexp));
+    return weathers.where((Weather weather) => weather.symbol.contains(regexp));
   }
 
-  void _buyStock(Stock stock) {
+  void _buyWeather(Weather weather) {
     setState(() {
-      stock.percentChange = stock.lastSale;
-      stock.lastSale = stock.lastSale;
-//      stock.percentChange = 100.0 * (1.0 / stock.lastSale);
-//      stock.lastSale += 1.0;
+      weather.percentChange = weather.lastSale;
+      weather.lastSale = weather.lastSale;
     });
     _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text('Purchased ${stock.symbol} for ${stock.lastSale}'),
+      content: Text('Purchased ${weather.symbol} for ${weather.lastSale}'),
       action: SnackBarAction(
         label: 'BUY MORE',
         onPressed: () {
-          _buyStock(stock);
+          _buyWeather(weather);
         },
       ),
     ));
   }
 
-  Widget _buildStockList(
-      BuildContext context, Iterable<Stock> stocks, StockHomeTab tab) {
-    return StockList(
-      stocks: stocks.toList(),
-      onAction: _buyStock,
-      onOpen: (Stock stock) {
-        Navigator.pushNamed(context, '/stock:${stock.symbol}');
+  Widget _buildWeatherList(
+      BuildContext context, Iterable<Weather> weathers, WeatherHomeTab tab) {
+    return WeatherList(
+      weathers: weathers.toList(),
+      onAction: _buyWeather,
+      onOpen: (Weather weather) {
+        Navigator.pushNamed(context, '/stock:${weather.symbol}');
       },
-      onShow: (Stock stock) {
+      onShow: (Weather weather) {
         _scaffoldKey.currentState.showBottomSheet<void>(
-            (BuildContext context) => StockSymbolBottomSheet(stock: stock));
+            (BuildContext context) => WeatherSymbolBottomSheet(weather: weather));
       },
     );
   }
 
-  Widget _buildStockTab(
-      BuildContext context, StockHomeTab tab, List<String> stockSymbols) {
+  Widget _buildWeatherTab(
+      BuildContext context, WeatherHomeTab tab, List<String> weatherSymbols) {
     return AnimatedBuilder(
-      key: ValueKey<StockHomeTab>(tab),
-      animation: Listenable.merge(<Listenable>[_searchQuery, widget.stocks]),
+      key: ValueKey<WeatherHomeTab>(tab),
+      animation: Listenable.merge(<Listenable>[_searchQuery, widget.weathers]),
       builder: (BuildContext context, Widget child) {
-        return _buildStockList(
+        return _buildWeatherList(
             context,
-            _filterBySearchQuery(_getStockList(widget.stocks, stockSymbols))
+            _filterBySearchQuery(_getWeatherList(widget.weathers, weatherSymbols))
                 .toList(),
             tab);
       },
@@ -223,7 +221,7 @@ class StockHomeState extends State<StockHome> {
         controller: _searchQuery,
         autofocus: true,
         decoration: const InputDecoration(
-          hintText: 'Search stock',
+          hintText: 'Search city',
         ),
       ),
       backgroundColor: Theme.of(context).canvasColor,
@@ -240,9 +238,9 @@ class StockHomeState extends State<StockHome> {
         drawer: _buildDrawer(context),
         body: TabBarView(
           children: <Widget>[
-            _buildStockTab(
-                context, StockHomeTab.market, widget.stocks.allSymbols),
-            _buildStockTab(context, StockHomeTab.portfolio, portfolioSymbols),
+            _buildWeatherTab(
+                context, WeatherHomeTab.market, widget.weathers.allSymbols),
+            _buildWeatherTab(context, WeatherHomeTab.portfolio, portfolioSymbols),
           ],
         ),
       ),

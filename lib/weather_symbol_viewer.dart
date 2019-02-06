@@ -4,20 +4,20 @@
 
 import 'package:flutter/material.dart';
 
-import 'stock_arrow.dart';
-import 'stock_data.dart';
+import 'weather_arrow.dart';
+import 'weather_data.dart';
 
-class _StockSymbolView extends StatelessWidget {
-  const _StockSymbolView({ this.stock, this.arrow });
+class _WeatherSymbolView extends StatelessWidget {
+  const _WeatherSymbolView({ this.weather, this.arrow });
 
-  final Stock stock;
+  final Weather weather;
   final Widget arrow;
 
   @override
   Widget build(BuildContext context) {
-    assert(stock != null);
-    final String lastSale = stock.lastSale;
-    String changeInPrice = stock.percentChange;
+    assert(weather != null);
+    final String lastSale = weather.lastSale;
+    String changeInPrice = weather.percentChange;
 
     final TextStyle headings = Theme.of(context).textTheme.caption;
     return Container(
@@ -27,7 +27,7 @@ class _StockSymbolView extends StatelessWidget {
           Row(
             children: <Widget>[
               Text(
-                '${stock.symbol}',
+                '${weather.symbol}',
                 style: Theme.of(context).textTheme.title
               ),
 //              arrow,
@@ -40,7 +40,7 @@ class _StockSymbolView extends StatelessWidget {
             height: 8.0
           ),
           Text('时间', style: headings),
-          Text('${stock.marketCap}'),
+          Text('${weather.marketCap}'),
           Container(
             height: 8.0
           ),
@@ -61,21 +61,21 @@ class _StockSymbolView extends StatelessWidget {
   }
 }
 
-class StockSymbolPage extends StatelessWidget {
-  const StockSymbolPage({ this.symbol, this.stocks });
+class WeatherSymbolPage extends StatelessWidget {
+  const WeatherSymbolPage({ this.symbol, this.weathers });
 
   final String symbol;
-  final StockData stocks;
+  final WeatherData weathers;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: stocks,
+      animation: weathers,
       builder: (BuildContext context, Widget child) {
-        final Stock stock = stocks[symbol];
+        final Weather weather = weathers[symbol];
         return Scaffold(
           appBar: AppBar(
-            title: Text(stock?.name ?? symbol)
+            title: Text(weather?.name ?? symbol)
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -87,18 +87,18 @@ class StockSymbolPage extends StatelessWidget {
                     padding: EdgeInsets.all(20.0),
                     child: Center(child: CircularProgressIndicator()),
                   ),
-                  secondChild: stock != null
-                    ? _StockSymbolView(
-                      stock: stock,
+                  secondChild: weather != null
+                    ? _WeatherSymbolView(
+                      weather: weather,
                       arrow: Hero(
-                        tag: stock,
-                        child: StockArrow(percentChange: stock.percentChange),
+                        tag: weather,
+                        child: WeatherArrow(percentChange: weather.percentChange),
                       ),
                     ) : Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Center(child: Text('$symbol not found')),
                     ),
-                  crossFadeState: stock == null && stocks.loading ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                  crossFadeState: weather == null && weathers.loading ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                 ),
               )
             )
@@ -109,10 +109,10 @@ class StockSymbolPage extends StatelessWidget {
   }
 }
 
-class StockSymbolBottomSheet extends StatelessWidget {
-  const StockSymbolBottomSheet({ this.stock });
+class WeatherSymbolBottomSheet extends StatelessWidget {
+  const WeatherSymbolBottomSheet({ this.weather });
 
-  final Stock stock;
+  final Weather weather;
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +121,9 @@ class StockSymbolBottomSheet extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: Colors.black26))
       ),
-      child: _StockSymbolView(
-        stock: stock,
-        arrow: StockArrow(percentChange: stock.percentChange)
+      child: _WeatherSymbolView(
+        weather: weather,
+        arrow: WeatherArrow(percentChange: weather.percentChange)
       )
    );
   }

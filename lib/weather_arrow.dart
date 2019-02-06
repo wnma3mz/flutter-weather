@@ -4,8 +4,8 @@
 
 import 'package:flutter/material.dart';
 
-class StockArrowPainter extends CustomPainter {
-  StockArrowPainter({this.color, this.percentChange});
+class WeatherArrowPainter extends CustomPainter {
+  WeatherArrowPainter({this.color, this.percentChange});
 
   final Color color;
   final String percentChange;
@@ -46,14 +46,14 @@ class StockArrowPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(StockArrowPainter oldDelegate) {
+  bool shouldRepaint(WeatherArrowPainter oldDelegate) {
     return oldDelegate.color != color ||
         oldDelegate.percentChange != percentChange;
   }
 }
 
-class StockArrow extends StatelessWidget {
-  const StockArrow({Key key, this.percentChange}) : super(key: key);
+class WeatherArrow extends StatelessWidget {
+  const WeatherArrow({Key key, this.percentChange}) : super(key: key);
 
   final String percentChange;
 
@@ -77,7 +77,7 @@ class StockArrow extends StatelessWidget {
         height: 50.0,
         margin: const EdgeInsets.symmetric(horizontal: 1.0),
         child: CustomPaint(
-            painter: StockArrowPainter(
+            painter: WeatherArrowPainter(
                 // TODO(jackson): This should change colors with the theme
                 color: _colorForPercentChange(percentChange),
                 percentChange: percentChange)));

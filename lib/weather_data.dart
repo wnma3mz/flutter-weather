@@ -12,11 +12,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-class Stock {
-  Stock(this.symbol, this.name, this.lastSale, this.marketCap,
+class Weather {
+  Weather(this.symbol, this.name, this.lastSale, this.marketCap,
       this.percentChange);
 
-  Stock.fromFields(Map<String, dynamic> data, Map<String, dynamic> realtime) {
+  Weather.fromFields(Map<String, dynamic> data, Map<String, dynamic> realtime) {
     // FIXME: This class should only have static data, not lastSale, etc.
     // "Symbol","Name","LastSale","MarketCap","IPOyear","Sector","industry","Summary Quote",
 
@@ -40,8 +40,8 @@ class Stock {
   String percentChange;
 }
 
-class StockData extends ChangeNotifier {
-  StockData() {
+class WeatherData extends ChangeNotifier {
+  WeatherData() {
     if (actuallyFetchData) {
       _httpClient = http.Client();
       _fetchNextChunk();
@@ -49,18 +49,18 @@ class StockData extends ChangeNotifier {
   }
 
   final List<String> _symbols = <String>[];
-  final Map<String, Stock> _stocks = <String, Stock>{};
+  final Map<String, Weather> _weathers = <String, Weather>{};
 
   Iterable<String> get allSymbols => _symbols;
 
-  Stock operator [](String symbol) => _stocks[symbol];
+  Weather operator [](String symbol) => _weathers[symbol];
 
   bool get loading => _httpClient != null;
 
   void add(Map<String, dynamic> data) {
-    final Stock stock = Stock.fromFields(data, data['realtime']);
-    _symbols.add(stock.symbol);
-    _stocks[stock.symbol] = stock;
+    final Weather weather = Weather.fromFields(data, data['realtime']);
+    _symbols.add(weather.symbol);
+    _weathers[weather.symbol] = weather;
 
     _symbols.sort();
     notifyListeners();

@@ -12,42 +12,42 @@ import 'i18n/stock_messages_all.dart';
 // Information about how this file relates to i18n/stock_messages_all.dart and how the i18n files
 // were generated can be found in i18n/regenerate.md.
 
-class StockStrings {
-  StockStrings(Locale locale) : _localeName = locale.toString();
+class WeatherStrings {
+  WeatherStrings(Locale locale) : _localeName = locale.toString();
 
   final String _localeName;
 
-  static Future<StockStrings> load(Locale locale) {
+  static Future<WeatherStrings> load(Locale locale) {
     return initializeMessages(locale.toString())
-      .then<StockStrings>((Object _) {
-        return StockStrings(locale);
+      .then<WeatherStrings>((Object _) {
+        return WeatherStrings(locale);
       });
   }
 
-  static StockStrings of(BuildContext context) {
-    return Localizations.of<StockStrings>(context, StockStrings);
+  static WeatherStrings of(BuildContext context) {
+    return Localizations.of<WeatherStrings>(context, WeatherStrings);
   }
 
   String title() {
     return Intl.message(
       'Weather',
-      name: 'title-TEST',
-      desc: 'Title for the Stocks application',
+      name: 'title-Weather',
+      desc: 'Title for the Weathers application',
       locale: _localeName,
     );
   }
 
   String market() => Intl.message(
-    'MARKET-Te',
-    name: 'market',
-    desc: 'Label for the Market tab',
+    'CITYS',
+    name: 'citys',
+    desc: 'Label for the citys tab',
     locale: _localeName,
   );
 
   String portfolio() => Intl.message(
-    'PORTFOLIO',
-    name: 'portfolio',
-    desc: 'Label for the Portfolio tab',
+    'NOTES',
+    name: 'notes',
+    desc: 'Label for the notes tab',
     locale: _localeName,
   );
 }

@@ -4,22 +4,22 @@
 
 import 'package:flutter/material.dart';
 
-import 'stock_types.dart';
+import 'weather_types.dart';
 
-class StockSettings extends StatefulWidget {
-  const StockSettings(this.configuration, this.updater);
+class WeatherSettings extends StatefulWidget {
+  const WeatherSettings(this.configuration, this.updater);
 
-  final StockConfiguration configuration;
-  final ValueChanged<StockConfiguration> updater;
+  final WeatherConfiguration configuration;
+  final ValueChanged<WeatherConfiguration> updater;
 
   @override
-  StockSettingsState createState() => StockSettingsState();
+  WeatherSettingsState createState() => WeatherSettingsState();
 }
 
-class StockSettingsState extends State<StockSettings> {
+class WeatherSettingsState extends State<WeatherSettings> {
   void _handleOptimismChanged(bool value) {
     value ??= false;
-    sendUpdates(widget.configuration.copyWith(stockMode: value ? StockMode.optimistic : StockMode.pessimistic));
+    sendUpdates(widget.configuration.copyWith(weatherMode: value ? WeatherMode.optimistic : WeatherMode.pessimistic));
   }
 
   void _handleBackupChanged(bool value) {
@@ -60,11 +60,11 @@ class StockSettingsState extends State<StockSettings> {
   }
 
   void _confirmOptimismChange() {
-    switch (widget.configuration.stockMode) {
-      case StockMode.optimistic:
+    switch (widget.configuration.weatherMode) {
+      case WeatherMode.optimistic:
         _handleOptimismChanged(false);
         break;
-      case StockMode.pessimistic:
+      case WeatherMode.pessimistic:
         showDialog<bool>(
           context: context,
            builder: (BuildContext context) {
@@ -92,7 +92,7 @@ class StockSettingsState extends State<StockSettings> {
     }
   }
 
-  void sendUpdates(StockConfiguration value) {
+  void sendUpdates(WeatherConfiguration value) {
     if (widget.updater != null)
       widget.updater(value);
   }
@@ -110,7 +110,7 @@ class StockSettingsState extends State<StockSettings> {
         title: const Text('Everything is awesome'),
         onTap: _confirmOptimismChange,
         trailing: Checkbox(
-          value: widget.configuration.stockMode == StockMode.optimistic,
+          value: widget.configuration.weatherMode == WeatherMode.optimistic,
           onChanged: (bool value) => _confirmOptimismChange(),
         ),
       ),

@@ -4,38 +4,35 @@
 
 import 'package:flutter/material.dart';
 
-import 'stock_arrow.dart';
-import 'stock_data.dart';
+import 'weather_arrow.dart';
+import 'weather_data.dart';
 
-typedef StockRowActionCallback = void Function(Stock stock);
+typedef WeatherRowActionCallback = void Function(Weather weather);
 
-class StockRow extends StatelessWidget {
-  StockRow({
-    this.stock,
+class WeatherRow extends StatelessWidget {
+  WeatherRow({
+    this.weather,
     this.onPressed,
     this.onDoubleTap,
     this.onLongPressed
-  }) : super(key: ObjectKey(stock));
+  }) : super(key: ObjectKey(weather));
 
-  final Stock stock;
-  final StockRowActionCallback onPressed;
-  final StockRowActionCallback onDoubleTap;
-  final StockRowActionCallback onLongPressed;
+  final Weather weather;
+  final WeatherRowActionCallback onPressed;
+  final WeatherRowActionCallback onDoubleTap;
+  final WeatherRowActionCallback onLongPressed;
 
   static const double kHeight = 65;
 
-  GestureTapCallback _getHandler(StockRowActionCallback callback) {
-    return callback == null ? null : () => callback(stock);
+  GestureTapCallback _getHandler(WeatherRowActionCallback callback) {
+    return callback == null ? null : () => callback(weather);
   }
 
   @override
   Widget build(BuildContext context) {
-    final String lastSale = stock.lastSale;
-    String changeInPrice = stock.percentChange;
-//    final String lastSale = '\$${stock.lastSale.toStringAsFixed(2)}';
-//    String changeInPrice = '${stock.percentChange.toStringAsFixed(2)}%';
-//    if (stock.percentChange > 0)
-//      changeInPrice = '+' + changeInPrice;
+    final String lastSale = weather.lastSale;
+    String changeInPrice = weather.percentChange;
+
     return InkWell(
       onTap: _getHandler(onPressed),
       onDoubleTap: _getHandler(onDoubleTap),
@@ -52,8 +49,8 @@ class StockRow extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(right: 5.0),
               child: Hero(
-                tag: stock,
-                child: StockArrow(percentChange: stock.percentChange)
+                tag: weather,
+                child: WeatherArrow(percentChange: weather.percentChange)
               )
             ),
             Expanded(
@@ -62,7 +59,7 @@ class StockRow extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      stock.symbol
+                      weather.symbol
                     )
                   ),
                   Expanded(

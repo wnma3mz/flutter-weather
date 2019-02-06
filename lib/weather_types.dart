@@ -4,12 +4,12 @@
 
 import 'package:flutter/foundation.dart';
 
-enum StockMode { optimistic, pessimistic }
+enum WeatherMode { optimistic, pessimistic }
 enum BackupMode { enabled, disabled }
 
-class StockConfiguration {
-  StockConfiguration({
-    @required this.stockMode,
+class WeatherConfiguration {
+  WeatherConfiguration({
+    @required this.weatherMode,
     @required this.backupMode,
     @required this.debugShowGrid,
     @required this.debugShowSizes,
@@ -19,7 +19,7 @@ class StockConfiguration {
     @required this.debugShowRainbow,
     @required this.showPerformanceOverlay,
     @required this.showSemanticsDebugger
-  }) : assert(stockMode != null),
+  }) : assert(weatherMode != null),
        assert(backupMode != null),
        assert(debugShowGrid != null),
        assert(debugShowSizes != null),
@@ -30,7 +30,7 @@ class StockConfiguration {
        assert(showPerformanceOverlay != null),
        assert(showSemanticsDebugger != null);
 
-  final StockMode stockMode;
+  final WeatherMode weatherMode;
   final BackupMode backupMode;
   final bool debugShowGrid;
   final bool debugShowSizes;
@@ -41,8 +41,8 @@ class StockConfiguration {
   final bool showPerformanceOverlay;
   final bool showSemanticsDebugger;
 
-  StockConfiguration copyWith({
-    StockMode stockMode,
+  WeatherConfiguration copyWith({
+    WeatherMode weatherMode,
     BackupMode backupMode,
     bool debugShowGrid,
     bool debugShowSizes,
@@ -53,8 +53,8 @@ class StockConfiguration {
     bool showPerformanceOverlay,
     bool showSemanticsDebugger
   }) {
-    return StockConfiguration(
-      stockMode: stockMode ?? this.stockMode,
+    return WeatherConfiguration(
+      weatherMode: weatherMode ?? this.weatherMode,
       backupMode: backupMode ?? this.backupMode,
       debugShowGrid: debugShowGrid ?? this.debugShowGrid,
       debugShowSizes: debugShowSizes ?? this.debugShowSizes,
